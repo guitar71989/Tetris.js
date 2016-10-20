@@ -1,6 +1,6 @@
-const View = require('tetris-view.js');
-const Game = // require appropriate file
+const View = require('./tetris-view.js');
 
 $( () => {
-  // Your code here
+  const rootEl = $('.tetris-game');
+  new View(rootEl);
 });

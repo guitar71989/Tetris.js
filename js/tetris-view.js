@@ -1,11 +1,26 @@
+const Board = require('./../lib/board.js');
+
 class View {
-  constructor(game, $el) {}
+  constructor($el) {
+    this.$el = $el;
+    this.board = new Board;
+    this.setupGrid();
+  }
 
-  bindEvents() {}
+  setupGrid() {
+    let html = "";
 
-  makeMove($square) {}
+    for (let i = 0; i < this.board.width; i++) {
+      html += "<ul>";
+      for (var j = 0; j < this.board.height; j++) {
+        html += "<li></li>";
+      }
+      html += "</ul>";
+    }
 
-  setupBoard() {}
+    this.$el.html(html);
+    this.$li = this.$el.find("li");
+  }
 }
 
 module.exports = View;
