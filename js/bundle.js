@@ -69,9 +69,9 @@
 	    let html = "";
 	
 	    for (let i = 0; i < this.board.width; i++) {
-	      html += "<ul>";
+	      html += `<ul data=${i} >`;
 	      for (var j = 0; j < this.board.height; j++) {
-	        html += "<li></li>";
+	        html += `<li empty=${true} data=${j}></li>`;
 	      }
 	      html += "</ul>";
 	    }
@@ -79,6 +79,7 @@
 	    this.$el.html(html);
 	    this.$li = this.$el.find("li");
 	  }
+	
 	}
 	
 	module.exports = View;
