@@ -22,14 +22,13 @@ body {
 
 figure {
   display: flex;
-  justify-content: center;
-  width: 182px;
-  height: 800px;
+  flex-direction: column;
   margin-bottom: 20px;
 }
 
-
 h1 {
+  display: flex;
+  justify-content: center;
   margin: 10px auto;
 }
 
@@ -45,7 +44,6 @@ li {
 }
 
 h1 img {
-  align-items: center;
   padding: 20px 0;
   width: 187.5px;
   height: 60px;
@@ -53,4 +51,33 @@ h1 img {
 
 ul {
   list-style: none;
+}
+
+
+.grey {
+  background-color: grey;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.green {
+  background-color: green;
+}
+
+.red {
+  background-color: red;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.purple {
+  background-color: purple;
+}
+
+.orange {
+  background-color: orange;
 }

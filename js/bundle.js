@@ -45,10 +45,14 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	const View = __webpack_require__(1);
+	const Piece = __webpack_require__(5);
+	
+	window.Piece = Piece;
 	
 	$( () => {
 	  const rootEl = $('.tetris-game');
 	  new View(rootEl);
+	
 	});
 
 
@@ -57,20 +61,38 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	const Board = __webpack_require__(2);
+	const Piece = __webpack_require__(5);
+	
 	
 	class View {
 	  constructor($el) {
 	    this.$el = $el;
 	    this.board = new Board;
 	    this.setupGrid();
-	  }
+	
+	    const currentPiece = new Piece;
+	    window.currentPiece = currentPiece;
+	
+	    window.setInterval(currentPiece.gravity, 500);
+	
+	    $(window).keydown(function (e) {
+	       if (e.keyCode === 37) {
+	           e.preventDefault();
+	           currentPiece.move('left');
+	       } else if (e.keyCode === 39) {
+	           e.preventDefault();
+	           currentPiece.move('right');
+	       }
+	     }
+	   );}
+	
 	
 	  setupGrid() {
 	    let html = "";
 	
-	    for (let i = 0; i < this.board.width; i++) {
+	    for (let i = 0; i < this.board.height; i++) {
 	      html += `<ul data=${i} >`;
-	      for (var j = 0; j < this.board.height; j++) {
+	      for (var j = 0; j < this.board.width; j++) {
 	        html += `<li empty=${true} data=${j}></li>`;
 	      }
 	      html += "</ul>";
@@ -78,7 +100,10 @@
 	
 	    this.$el.html(html);
 	    this.$li = this.$el.find("li");
+	
 	  }
+	
+	
 	
 	}
 	
@@ -89,7 +114,7 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Tetrimino = __webpack_require__(3);
+	const Piece = __webpack_require__(5);
 	const Coord = __webpack_require__(4);
 	
 	
@@ -101,9 +126,9 @@
 	
 	  setupGrid(height, width) {
 	    const grid = [];
-	    for (var i = 0; i < width ; i++) {
+	    for (var i = 0; i < height ; i++) {
 	      const row = [];
-	      for (var j = 0; j < height; j++) {
+	      for (var j = 0; j < width; j++) {
 	        row.push(Board.BLANK_SYMBOL);
 	      }
 	      grid.push(row);
@@ -128,37 +153,7 @@
 
 
 /***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	const Coord = __webpack_require__(4);
-	
-	const MOVES = {
-	  LEFT: "left",
-	  RIGHT: "right",
-	  DOWN: "down",
-	  ROTATE_LEFT: "rotate_left"
-	};
-	
-	class Tetrimino {
-	  constructor (board) {
-	    this.board = board.getBoard;
-	    this.set = false;
-	    this.color = null;
-	    this.coords = [];
-	  }
-	
-	  move(direction){
-	    switch(direction){
-	      case MOVES.RIGHT:
-	        }
-	    }
-	}
-	
-	module.exports = Tetrimino;
-
-
-/***/ },
+/* 3 */,
 /* 4 */
 /***/ function(module, exports) {
 
@@ -182,6 +177,139 @@
 	}
 	
 	module.exports = Coord;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	const Coord = __webpack_require__(4);
+	
+	const SHAPES = [
+	  ["I", [[0,5], [1, 5], [2, 5], [3, 5]], "red"],
+	  ["J", [[0,4], [0, 5], [1, 4], [1,5]], "yellow"],
+	  ["L", [[0,4], [0, 5], [1, 5], [2,5]], "purple"],
+	  ["O", [[0,4], [0, 5], [1, 4], [1,5]], "blue"],
+	  ["S", [[0,5], [1, 5], [1, 4], [2, 4]], "orange"],
+	  ["T", [[0,5], [1, 4], [1, 5], [2,5]], "green"],
+	  ["Z", [[0,4], [0, 5], [1, 5], [1,6]], "grey"],
+	];
+	
+	const MOVES = {
+	  LEFT: "left",
+	  RIGHT: "right",
+	  DOWN: "down",
+	  ROTATE_LEFT: "rotate_left"
+	};
+	
+	
+	
+	class Piece {
+	  constructor () {
+	    this.randPiece = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+	    this.pieceColor = this.randPiece[2];
+	    this.pieceCoords = this.randPiece[1];
+	    this.occupyCell = this.occupyCell.bind(this);
+	    this.occupyCells();
+	  }
+	
+	  occupyCells(){
+	    this.pieceCoords.forEach( (coord) => {
+	      this.occupyCell(coord);
+	    });
+	  }
+	
+	  gravity(){
+	    if (this.currentPiece.move("down")) {
+	      // window.currentPiece.move("down");
+	    } else {
+	      this.currentPiece = new Piece();
+	      window.currentPiece = this.currentPiece;
+	    }
+	  }
+	
+	  occupyCell(coord) {
+	    $(`ul[data=${coord[0]}] li[data=${coord[1]}]`)
+	      .addClass(`${this.pieceColor}`);
+	    $(`ul[data=${coord[0]}] li[data=${coord[1]}]`)
+	      .attr('empty', 'false');
+	  }
+	
+	  unoccupyCells(){
+	    this.pieceCoords.forEach( (coord) => {
+	      this.unoccupyCell(coord);
+	    });
+	  }
+	
+	  unoccupyCell(coord) {
+	    $(`ul[data=${coord[0]}] li[data=${coord[1]}]`)
+	      .removeClass(`${this.pieceColor}`);
+	    $(`ul[data=${coord[0]}] li[data=${coord[1]}]`)
+	      .attr('empty', 'true');
+	  }
+	
+	
+	  move(direction){
+	    let newCoords;
+	
+	    switch (direction) {
+	      case MOVES.LEFT: {
+	        newCoords = this.pieceCoords.map(
+	          (coord) => ([coord[0], (coord[1] - 1)])
+	        );
+	        break;
+	      }
+	      case MOVES.RIGHT: {
+	        newCoords = this.pieceCoords.map(
+	         (coord) => ([coord[0], (coord[1] + 1)])
+	       );
+	       break;
+	      }
+	      case MOVES.DOWN: {
+	        newCoords = this.pieceCoords.map(
+	         (coord) => ([coord[0] + 1, (coord[1])])
+	       );
+	       break;
+	     }
+	      default:
+	    }
+	    const validMove = this.validMove(this.pieceCoords, newCoords);
+	
+	    if(validMove) {
+	      this.unoccupyCells();
+	      this.pieceCoords = newCoords;
+	      this.occupyCells();
+	    }
+	    return validMove;
+	  }
+	
+	  validMove(oldCoords, newCoords) {
+	    let valid = true;
+	
+	    const oldCoordsStringify = oldCoords.map( (coord) => {
+	      return JSON.stringify(coord);
+	    });
+	
+	
+	      const filteredCoords = newCoords.filter( (coord) => {
+	        return !oldCoordsStringify.includes(JSON.stringify(coord));
+	      });
+	
+	
+	    filteredCoords.forEach( (coord) => {
+	      if (($(`ul[data=${coord[0]}] li[data=${coord[1]}]`).attr('empty') !== "true")
+	        || coord[1] < 0
+	          || coord[1] > 9) {
+	          valid = false;
+	          return valid;
+	        }
+	    });
+	    return valid;
+	  }
+	
+	}
+	
+	module.exports = Piece;
 
 
 /***/ }
