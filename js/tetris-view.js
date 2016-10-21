@@ -16,10 +16,16 @@ class View {
     $(window).keydown(function (e) {
        if (e.keyCode === 37) {
            e.preventDefault();
-           currentPiece.move('left');
+           window.currentPiece.move('left');
        } else if (e.keyCode === 39) {
            e.preventDefault();
-           currentPiece.move('right');
+           window.currentPiece.move('right');
+       } else if (e.keyCode === 38) {
+            e.preventDefault();
+            window.currentPiece.move('rotate');
+        } else if (e.keyCode === 40) {
+            e.preventDefault();
+            window.currentPiece.move('down');
        }
      }
    );}
