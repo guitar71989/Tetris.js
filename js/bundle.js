@@ -47,11 +47,67 @@
 	const View = __webpack_require__(1);
 	const Piece = __webpack_require__(5);
 	
-	window.Piece = Piece;
+	const $overlay = $('<div id="overlay"></div>');
+	const $modal = $('<div id="modal"></div>');
+	const $play = $('<button id="play" href="#">Play</a>');
+	
+	const $instructions = $('<div id="instructions"><div>');
+	const $instructionsTitle = $('<h1 id="instructions-title">Instructions</h1>');
+	const $moveUp = $('<div class="key-instruction-ctn"><p class="arrow up">&#x2B05</p><p class="rotatetext">Rotate</p><div>');
+	const $moveLeft = $('<div class="key-instruction-ctn"><p class="arrow right">&#x2B05</p><p right-text>Move Right</p></div>');
+	const $moveRight = $('<div class="key-instruction-ctn"><p class="arrow down">&#x2B05</p><p down-text>Move Down</p></div>');
+	const $moveDown = $('<div class="key-instruction-ctn"><p class="arrow left">&#x2B05</p><p left-text>Move Left</p></div>');
+	
+	
+	$modal.hide();
+	$overlay.hide();
+	$instructions.append($instructionsTitle, $moveUp, $moveLeft, $moveRight, $moveDown);
+	$modal.append($play, $instructions);
+	
+	var modal = (function(){
+	  var method = {};
+	
+	  method.center =  function () {
+	    var top, left;
+	
+	    top = 200;
+	    left = Math.max($(window).width() - $modal.outerWidth(), 0) / 2;
+	
+	    $modal.css({
+	      top:top + $(window).scrollTop(),
+	      left:left + $(window).scrollLeft()
+	    });
+	  };
+	
+	  method.open = function () {
+	    method.center();
+	    $(window).bind('resize.modal', method.center);
+	    $modal.show();
+	    $overlay.show();
+	  };
+	
+	  method.close = function () {
+	    $modal.hide();
+	    $overlay.hide();
+	  };
+	
+	  return method;
+	}());
+	
+	
 	
 	$( () => {
 	  const rootEl = $('.tetris-game');
-	  new View(rootEl);
+	
+	  $('body').append($overlay, $modal);
+	  modal.open();
+	
+	  $('#play').click(function () {
+	    modal.close();
+	    newGame.startGame();
+	  });
+	
+	  const newGame = new View(rootEl);
 	
 	});
 
@@ -70,27 +126,8 @@
 	    this.board = new Board;
 	    this.setupGrid();
 	
-	    const currentPiece = new Piece;
-	    window.currentPiece = currentPiece;
 	
-	    window.setInterval(currentPiece.gravity, 500);
-	
-	    $(window).keydown(function (e) {
-	       if (e.keyCode === 37) {
-	           e.preventDefault();
-	           window.currentPiece.move('left');
-	       } else if (e.keyCode === 39) {
-	           e.preventDefault();
-	           window.currentPiece.move('right');
-	       } else if (e.keyCode === 38) {
-	            e.preventDefault();
-	            window.currentPiece.move('rotate');
-	        } else if (e.keyCode === 40) {
-	            e.preventDefault();
-	            window.currentPiece.move('down');
-	       }
-	     }
-	   );}
+	}
 	
 	
 	  setupGrid() {
@@ -107,6 +144,39 @@
 	    this.$el.html(html);
 	    this.$li = this.$el.find("li");
 	
+	  }
+	
+	  startGame() {
+	    const currentPiece = new Piece;
+	    window.currentPiece = currentPiece;
+	
+	    window.setInterval(this.gravity, 500);
+	
+	    $(window).keydown(function (e) {
+	       if (e.keyCode === 37) {
+	           e.preventDefault();
+	           window.currentPiece.move('left');
+	       } else if (e.keyCode === 39) {
+	           e.preventDefault();
+	           window.currentPiece.move('right');
+	       } else if (e.keyCode === 38) {
+	            e.preventDefault();
+	            window.currentPiece.move('rotate');
+	        } else if (e.keyCode === 40) {
+	            e.preventDefault();
+	            window.currentPiece.move('down');
+	       }
+	     }
+	   );
+	  }
+	
+	  gravity(){
+	    if (window.currentPiece.move("down")) {
+	      // window.currentPiece.move("down");
+	    } else {
+	      this.currentPiece = new Piece();
+	      window.currentPiece = this.currentPiece;
+	    }
 	  }
 	
 	
@@ -240,14 +310,15 @@
 	    return this.pieceCoords[0];
 	  }
 	
-	  gravity(){
-	    if (this.currentPiece.move("down")) {
-	      // window.currentPiece.move("down");
-	    } else {
-	      this.currentPiece = new Piece();
-	      window.currentPiece = this.currentPiece;
-	    }
-	  }
+	  // gravity(){
+	  //   if (this.currentPiece.move("down")) {
+	  //     // window.currentPiece.move("down");
+	  //   } else {
+	  //
+	  //     this.currentPiece = new Piece();
+	  //     window.currentPiece = this.currentPiece;
+	  //   }
+	  // }
 	
 	  occupyCell(coord) {
 	    $(`ul[data=${coord[0]}] li[data=${coord[1]}]`)
