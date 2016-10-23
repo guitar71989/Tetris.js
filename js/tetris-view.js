@@ -1,6 +1,7 @@
 const Board = require('./../lib/board.js');
 const Piece = require('./../lib/piece.js');
-
+const Coord = require('./../lib/coord.js');
+const Modal = require('./../lib/modal.js');
 
 class View {
   constructor($el) {
@@ -8,6 +9,7 @@ class View {
     this.board = new Board;
     this.setupGrid();
     this.gravity = this.gravity.bind(this);
+    this.gameOver = false;
 }
 
 
@@ -29,9 +31,10 @@ class View {
 
   startGame() {
     const currentPiece = new Piece;
+
     window.currentPiece = currentPiece;
 
-    window.setInterval(this.gravity, 500);
+    window.interval = setInterval(this.gravity, 500);
 
     $(window).keydown(function (e) {
        if (e.keyCode === 37) {
@@ -52,6 +55,7 @@ class View {
   }
 
   gravity(){
+    console.log("hello")
     if (window.currentPiece.move("down")) {
       // window.currentPiece.move("down");
     } else {
@@ -59,25 +63,66 @@ class View {
         if ($(`ul[data=${i}] li[empty=${true}]`).length === 0) {
             for (var j = 0; j < this.board.width; j++) {
               $(`ul[data=${i}] li[data=${j}]`)
-                .removeClass('red')
-                .removeClass('purple')
-                .removeClass('blue')
-                .removeClass('yellow')
-                .removeClass('orange')
-                .removeClass('green')
-                .removeClass('grey');
-              $(`ul[data=${i}] li[data=${j}]`)
-                .attr('empty', 'true');
-
+                .removeClass("red")
+                .removeClass("green")
+                .removeClass("yellow")
+                .removeClass("blue")
+                .removeClass("orange")
+                .removeClass("green")
+                .removeClass("purple")
+                .removeClass("grey")
+                .attr("empty", `${true}`);
             }
+
+            for (var y = i - 1; y > 0; y--) {
+                for (var x = 0; x < this.board.width; x++) {
+                  const color = $(`ul[data=${y}] li[data=${x}]`).attr("class");
+                  const pos = [y, x];
+                  const coord = new Coord(pos, color);
+                  const newCoord = new Coord([coord.y + 1, coord.x], coord.color);
+                  if (!coord.empty()) {
+                    coord.unoccupyCell();
+                    newCoord.occupyCell();
+                  }
+                }
+              }
           }
         }
 
-      this.currentPiece = new Piece();
-      window.currentPiece = this.currentPiece;
+      if (!this.gameOver) {
+        this.currentPiece = new Piece();
+        window.currentPiece = this.currentPiece;
+      }
+
+      if (!this.currentPiece.move("down")) {
+        this.endGame();
+
+        Modal.$modal.hide();
+        Modal.$overlay.hide();
+
+        Modal.modal.open();
+
+        const view = this;
+
+        $('#play').click(function () {
+          Modal.modal.close();
+          window.clearInterval(window.interval);
+          $(window).off('keydown');
+          view.setupGrid();
+          view.startGame();
+        });
+
+      }
+
       }
 
     }
+
+    endGame() {
+      window.clearInterval(window.interval);
+      $(window).off('keydown');
+    }
+
 
 }
 

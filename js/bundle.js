@@ -45,8 +45,439 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	const View = __webpack_require__(1);
-	const Piece = __webpack_require__(5);
+	const Piece = __webpack_require__(3);
+	const Modal = __webpack_require__(5);
 	
+	
+	$( () => {
+	  const rootEl = $('.tetris-game');
+	
+	  $('body').append(Modal.$overlay, Modal.$modal);
+	
+	  Modal.modal.open();
+	
+	  $('#play').click(function () {
+	    Modal.modal.close();
+	    newGame.startGame();
+	  });
+	
+	  const newGame = new View(rootEl);
+	
+	});
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	const Board = __webpack_require__(2);
+	const Piece = __webpack_require__(3);
+	const Coord = __webpack_require__(4);
+	const Modal = __webpack_require__(5);
+	
+	class View {
+	  constructor($el) {
+	    this.$el = $el;
+	    this.board = new Board;
+	    this.setupGrid();
+	    this.gravity = this.gravity.bind(this);
+	    this.gameOver = false;
+	}
+	
+	
+	  setupGrid() {
+	    let html = "";
+	
+	    for (let i = 0; i < this.board.height; i++) {
+	      html += `<ul data=${i} >`;
+	      for (var j = 0; j < this.board.width; j++) {
+	        html += `<li empty=${true} data=${j}></li>`;
+	      }
+	      html += "</ul>";
+	    }
+	
+	    this.$el.html(html);
+	    this.$li = this.$el.find("li");
+	
+	  }
+	
+	  startGame() {
+	    const currentPiece = new Piece;
+	
+	    window.currentPiece = currentPiece;
+	
+	    window.interval = setInterval(this.gravity, 500);
+	
+	    $(window).keydown(function (e) {
+	       if (e.keyCode === 37) {
+	           e.preventDefault();
+	           window.currentPiece.move('left');
+	       } else if (e.keyCode === 39) {
+	           e.preventDefault();
+	           window.currentPiece.move('right');
+	       } else if (e.keyCode === 38) {
+	            e.preventDefault();
+	            window.currentPiece.move('rotate');
+	        } else if (e.keyCode === 40) {
+	            e.preventDefault();
+	            window.currentPiece.move('down');
+	       }
+	     }
+	   );
+	  }
+	
+	  gravity(){
+	    console.log("hello")
+	    if (window.currentPiece.move("down")) {
+	      // window.currentPiece.move("down");
+	    } else {
+	      for (var i = 0; i < this.board.height; i++) {
+	        if ($(`ul[data=${i}] li[empty=${true}]`).length === 0) {
+	            for (var j = 0; j < this.board.width; j++) {
+	              $(`ul[data=${i}] li[data=${j}]`)
+	                .removeClass("red")
+	                .removeClass("green")
+	                .removeClass("yellow")
+	                .removeClass("blue")
+	                .removeClass("orange")
+	                .removeClass("green")
+	                .removeClass("purple")
+	                .removeClass("grey")
+	                .attr("empty", `${true}`);
+	            }
+	
+	            for (var y = i - 1; y > 0; y--) {
+	                for (var x = 0; x < this.board.width; x++) {
+	                  const color = $(`ul[data=${y}] li[data=${x}]`).attr("class");
+	                  const pos = [y, x];
+	                  const coord = new Coord(pos, color);
+	                  const newCoord = new Coord([coord.y + 1, coord.x], coord.color);
+	                  if (!coord.empty()) {
+	                    coord.unoccupyCell();
+	                    newCoord.occupyCell();
+	                  }
+	                }
+	              }
+	          }
+	        }
+	
+	      if (!this.gameOver) {
+	        this.currentPiece = new Piece();
+	        window.currentPiece = this.currentPiece;
+	      }
+	
+	      if (!this.currentPiece.move("down")) {
+	        this.endGame();
+	
+	        Modal.$modal.hide();
+	        Modal.$overlay.hide();
+	
+	        Modal.modal.open();
+	
+	        const view = this;
+	
+	        $('#play').click(function () {
+	          Modal.modal.close();
+	          window.clearInterval(window.interval);
+	          $(window).off('keydown');
+	          view.setupGrid();
+	          view.startGame();
+	        });
+	
+	      }
+	
+	      }
+	
+	    }
+	
+	    endGame() {
+	      window.clearInterval(window.interval);
+	      $(window).off('keydown');
+	    }
+	
+	
+	}
+	
+	module.exports = View;
+
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	const Piece = __webpack_require__(3);
+	const Coord = __webpack_require__(4);
+	
+	
+	class Board {
+	  constructor(height = 20, width = 10){
+	    this.height = height;
+	    this.width = width;
+	  }
+	
+	  setupGrid(height, width) {
+	    const grid = [];
+	    for (var i = 0; i < height ; i++) {
+	      const row = [];
+	      for (var j = 0; j < width; j++) {
+	        row.push(Board.BLANK_SYMBOL);
+	      }
+	      grid.push(row);
+	    }
+	    return grid;
+	  }
+	
+	
+	}
+	
+	Board.BLANK_SYMBOL = ".";
+	
+	module.exports = Board;
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	const Coord = __webpack_require__(4);
+	
+	const PIECE_TYPE = {
+	  I: "I",
+	  J: "J",
+	  L: "L",
+	  O: "O",
+	  S: "S",
+	  T: "T",
+	  Z: "Z",
+	};
+	
+	const SHAPES = [
+	  ["I",
+	    [ new Coord([2,5], "red"),
+	      new Coord([1, 5], "red"),
+	      new Coord([0, 5], "red"),
+	      new Coord([3, 5],"red")],
+	      "red"
+	    ],
+	
+	  ["L",
+	    [ new Coord([1,4], "purple"),
+	    new Coord([0, 5], "purple"),
+	    new Coord([0, 4], "purple"),
+	    new Coord([2, 4],"purple")],
+	    "purple"
+	  ],
+	
+	  ["J",
+	    [ new Coord([1,5], "blue"),
+	    new Coord([0, 5], "blue"),
+	    new Coord([0, 4], "blue"),
+	    new Coord([2, 5],"blue")],
+	    "blue"
+	  ],
+	
+	  ["O",
+	    [ new Coord([0,4], "yellow"),
+	    new Coord([0, 5], "yellow"),
+	    new Coord([1, 4], "yellow"),
+	    new Coord([1, 5],"yellow")],
+	    "yellow"
+	  ],
+	
+	  ["S",
+	    [ new Coord([1,5], "orange"),
+	      new Coord([1, 4], "orange"),
+	      new Coord([0, 5], "orange"),
+	      new Coord([0, 6],"orange")],
+	      "orange"
+	    ],
+	
+	  ["T",
+	    [ new Coord([1,5], "green"),
+	    new Coord([1, 4], "green"),
+	    new Coord([0, 5], "green"),
+	    new Coord([2, 5],"green")],
+	    "green"
+	  ],
+	
+	  ["Z",
+	    [ new Coord([0,5], "grey"),
+	    new Coord([1, 5], "grey"),
+	    new Coord([0, 4], "grey"),
+	    new Coord([1, 6],"grey")],
+	    "grey"
+	  ],
+	];
+	
+	const MOVES = {
+	  LEFT: "left",
+	  RIGHT: "right",
+	  DOWN: "down",
+	  ROTATE: "rotate"
+	};
+	
+	
+	
+	class Piece {
+	  constructor () {
+	    this.randPiece = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+	    this.pieceType = this.randPiece[0];
+	    this.pieceCoords = this.randPiece[1];
+	    this.pieceColor = this.randPiece[2];
+	    this.occupyCells();
+	    this.validMove.bind(this);
+	  }
+	
+	  pieceOrigin(){
+	    return this.pieceCoords[0];
+	  }
+	
+	  occupyCells(){
+	    this.pieceCoords.forEach( (coord) => {
+	      coord.occupyCell();
+	    });
+	  }
+	
+	  unoccupyCells(){
+	    this.pieceCoords.forEach( (coord) => {
+	      coord.unoccupyCell();
+	    });
+	  }
+	
+	  move(direction){
+	    let newCoords;
+	    let relativeVectors;
+	    let rotatedVectors;
+	    let finalVectors;
+	
+	    switch (direction) {
+	      case MOVES.LEFT: {
+	        newCoords = this.pieceCoords.map(
+	          (coord) => new Coord([coord.y, coord.x - 1], coord.color)
+	        );
+	        break;
+	      }
+	      case MOVES.RIGHT: {
+	        newCoords = this.pieceCoords.map(
+	         (coord) => new Coord([coord.y, coord.x + 1], coord.color)
+	       );
+	       break;
+	      }
+	      case MOVES.DOWN: {
+	        newCoords = this.pieceCoords.map(
+	         (coord) => new Coord([coord.y + 1, coord.x], coord.color)
+	       );
+	       break;
+	     }
+	     case MOVES.ROTATE: {
+	       if (this.pieceType === "O") {
+	         break;
+	       } else {
+	         relativeVectors = this.pieceCoords.map(
+	           (coord) => ([(coord.y - this.pieceOrigin().y), (coord.x - this.pieceOrigin().x)])
+	         );
+	
+	         rotatedVectors = relativeVectors.map(
+	           (vector) => ([(0*vector[0] + -1*vector[1]), (1*vector[0] + 0*vector[1])])
+	         );
+	
+	         newCoords = rotatedVectors.map(
+	           (vector) => new Coord([ (vector[0] + this.pieceOrigin().y), (vector[1] + this.pieceOrigin().x) ], this.pieceColor)
+	         );
+	         break;
+	       }
+	     }
+	      default:
+	    }
+	
+	    newCoords = newCoords || this.pieceCoords;
+	
+	    const validMove = this.validMove(newCoords);
+	
+	    if(validMove) {
+	      this.unoccupyCells();
+	      this.pieceCoords = newCoords;
+	      this.occupyCells();
+	    }
+	    return validMove;
+	  }
+	
+	  validMove(newCoords) {
+	    let valid = true;
+	
+	    const nonOverlappingCoords = newCoords.filter( (coord) => {
+	      for (var i = 0; i < this.pieceCoords.length; i++) {
+	        if (this.pieceCoords[i].equals(coord)) {
+	          return false;
+	        }
+	
+	      }
+	      return true;
+	    });
+	
+	    nonOverlappingCoords.forEach( (coord) => {
+	      if (!coord.empty() || !coord.inBounds()) {
+	          valid = false;
+	          return valid;
+	        }
+	    });
+	
+	    return valid;
+	  }
+	
+	}
+	
+	module.exports = Piece;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	class Coord {
+	  constructor(array, color) {
+	    this.y = array[0];
+	    this.x = array[1];
+	    this.color = color;
+	  }
+	
+	    occupyCell() {
+	      $(`ul[data=${this.y}] li[data=${this.x}]`)
+	        .addClass(`${this.color}`);
+	      $(`ul[data=${this.y}] li[data=${this.x}]`)
+	        .attr('empty', 'false');
+	    }
+	
+	    unoccupyCell() {
+	      $(`ul[data=${this.y}] li[data=${this.x}]`)
+	        .removeClass(`${this.color}`);
+	      $(`ul[data=${this.y}] li[data=${this.x}]`)
+	        .attr('empty', 'true');
+	    }
+	
+	    equals(coord) {
+	      return (this.y === coord.y) && (this.x === coord.x);
+	    }
+	
+	    empty() {
+	      return ($(`ul[data=${this.y}]
+	        li[data=${this.x}]`)
+	        .attr('empty') === "true");
+	    }
+	
+	    inBounds() {
+	      return (this.x >= 0 && this.x <= 9 && this.y >= 0 && this.y <= 19);
+	    }
+	
+	}
+	
+	module.exports = Coord;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
 	const $overlay = $('<div id="overlay"></div>');
 	const $modal = $('<div id="modal"></div>');
 	const $play = $('<button id="play" href="#">Play</a>');
@@ -95,353 +526,17 @@
 	}());
 	
 	
-	
-	$( () => {
-	  const rootEl = $('.tetris-game');
-	
-	  $('body').append($overlay, $modal);
-	  modal.open();
-	
-	  $('#play').click(function () {
-	    modal.close();
-	    newGame.startGame();
-	  });
-	
-	  const newGame = new View(rootEl);
-	
-	});
-
-
-/***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-	const Board = __webpack_require__(2);
-	const Piece = __webpack_require__(5);
-	
-	
-	class View {
-	  constructor($el) {
-	    this.$el = $el;
-	    this.board = new Board;
-	    this.setupGrid();
-	    this.gravity = this.gravity.bind(this);
-	}
-	
-	
-	  setupGrid() {
-	    let html = "";
-	
-	    for (let i = 0; i < this.board.height; i++) {
-	      html += `<ul data=${i} >`;
-	      for (var j = 0; j < this.board.width; j++) {
-	        html += `<li empty=${true} data=${j}></li>`;
-	      }
-	      html += "</ul>";
-	    }
-	
-	    this.$el.html(html);
-	    this.$li = this.$el.find("li");
-	
-	  }
-	
-	  startGame() {
-	    const currentPiece = new Piece;
-	    window.currentPiece = currentPiece;
-	
-	    window.setInterval(this.gravity, 500);
-	
-	    $(window).keydown(function (e) {
-	       if (e.keyCode === 37) {
-	           e.preventDefault();
-	           window.currentPiece.move('left');
-	       } else if (e.keyCode === 39) {
-	           e.preventDefault();
-	           window.currentPiece.move('right');
-	       } else if (e.keyCode === 38) {
-	            e.preventDefault();
-	            window.currentPiece.move('rotate');
-	        } else if (e.keyCode === 40) {
-	            e.preventDefault();
-	            window.currentPiece.move('down');
-	       }
-	     }
-	   );
-	  }
-	
-	  gravity(){
-	    if (window.currentPiece.move("down")) {
-	      // window.currentPiece.move("down");
-	    } else {
-	      for (var i = 0; i < this.board.height; i++) {
-	        if ($(`ul[data=${i}] li[empty=${true}]`).length === 0) {
-	            for (var j = 0; j < this.board.width; j++) {
-	              $(`ul[data=${i}] li[data=${j}]`)
-	                .removeClass('red')
-	                .removeClass('purple')
-	                .removeClass('blue')
-	                .removeClass('yellow')
-	                .removeClass('orange')
-	                .removeClass('green')
-	                .removeClass('grey');
-	              $(`ul[data=${i}] li[data=${j}]`)
-	                .attr('empty', 'true');
-	
-	            }
-	          }
-	        }
-	
-	      this.currentPiece = new Piece();
-	      window.currentPiece = this.currentPiece;
-	      }
-	
-	    }
-	
-	}
-	
-	module.exports = View;
-
-
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	const Piece = __webpack_require__(5);
-	const Coord = __webpack_require__(4);
-	
-	
-	class Board {
-	  constructor(height = 20, width = 10){
-	    this.height = height;
-	    this.width = width;
-	  }
-	
-	  setupGrid(height, width) {
-	    const grid = [];
-	    for (var i = 0; i < height ; i++) {
-	      const row = [];
-	      for (var j = 0; j < width; j++) {
-	        row.push(Board.BLANK_SYMBOL);
-	      }
-	      grid.push(row);
-	    }
-	    return grid;
-	  }
-	
-	  render() {
-	    const grid = Board.setupGrid(this.height, this.width);
-	
-	  }
-	
-	  validPosition(coord){
-	    return (coord.i >= 0) && (coord.i < this.width) &&
-	      (coord.j >= 0) && (coord.j < this.height);
-	  }
-	}
-	
-	Board.BLANK_SYMBOL = ".";
-	
-	module.exports = Board;
-
-
-/***/ },
-/* 3 */,
-/* 4 */
-/***/ function(module, exports) {
-
-	class Coord {
-	  constructor(i, j) {
-	    this.i = i;
-	    this.j = j;
-	  }
-	
-	  equals(coord2) {
-	      return (this.i == coord2.i) && (this.j == coord2.j);
-	  }
-	
-	  isOpposite(coord2) {
-	    return (this.i == (-1 * coord2.i)) && (this.j == (-1 * coord2.j));
-	  }
-	
-	  plus(coord2) {
-	    return new Coord(this.i + coord2.i, this.j + coord2.j);
-	  }
-	}
-	
-	module.exports = Coord;
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	const Coord = __webpack_require__(4);
-	
-	const PIECE_TYPE = {
-	  I: "I",
-	  J: "J",
-	  L: "L",
-	  O: "O",
-	  S: "S",
-	  T: "T",
-	  Z: "Z",
-	};
-	
-	const SHAPES = [
-	  ["I", [[2,5], [1, 5], [0, 5], [3, 5]], "red"],
-	  ["L", [[1,4], [0, 5], [0, 4], [2,4]], "purple"],
-	  ["J", [[1,5], [0, 5], [0, 4], [2,5]], "blue"],
-	  ["O", [[0,4], [0, 5], [1, 4], [1,5]], "yellow"],
-	  ["S", [[1,5], [0, 5], [1, 4], [2, 4]], "orange"],
-	  ["T", [[1,5], [1, 4], [0, 5], [2,5]], "green"],
-	  ["Z", [[0,5], [1, 5], [0, 4], [1,6]], "grey"],
-	];
-	
-	const MOVES = {
-	  LEFT: "left",
-	  RIGHT: "right",
-	  DOWN: "down",
-	  ROTATE: "rotate"
-	};
-	
-	
-	
-	class Piece {
-	  constructor () {
-	    this.randPiece = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-	    this.pieceType = this.randPiece[0];
-	    this.pieceCoords = this.randPiece[1];
-	    this.pieceColor = this.randPiece[2];
-	    this.occupyCell = this.occupyCell.bind(this);
-	    this.occupyCells();
-	  }
-	
-	  occupyCells(){
-	    this.pieceCoords.forEach( (coord) => {
-	      this.occupyCell(coord);
-	    });
-	  }
-	
-	  pieceOrigin(){
-	    return this.pieceCoords[0];
-	  }
-	
-	  // gravity(){
-	  //   if (this.currentPiece.move("down")) {
-	  //     // window.currentPiece.move("down");
-	  //   } else {
-	  //
-	  //     this.currentPiece = new Piece();
-	  //     window.currentPiece = this.currentPiece;
-	  //   }
-	  // }
-	
-	  occupyCell(coord) {
-	    $(`ul[data=${coord[0]}] li[data=${coord[1]}]`)
-	      .addClass(`${this.pieceColor}`);
-	    $(`ul[data=${coord[0]}] li[data=${coord[1]}]`)
-	      .attr('empty', 'false');
-	  }
-	
-	  unoccupyCells(){
-	    this.pieceCoords.forEach( (coord) => {
-	      this.unoccupyCell(coord);
-	    });
-	  }
-	
-	  unoccupyCell(coord) {
-	    $(`ul[data=${coord[0]}] li[data=${coord[1]}]`)
-	      .removeClass(`${this.pieceColor}`);
-	    $(`ul[data=${coord[0]}] li[data=${coord[1]}]`)
-	      .attr('empty', 'true');
-	  }
-	
-	
-	  move(direction){
-	    let newCoords;
-	    let relativeVectors;
-	    let transformedVectors;
-	    let finalVectors;
-	
-	    switch (direction) {
-	      case MOVES.LEFT: {
-	        newCoords = this.pieceCoords.map(
-	          (coord) => ([coord[0], (coord[1] - 1)])
-	        );
-	        break;
-	      }
-	      case MOVES.RIGHT: {
-	        newCoords = this.pieceCoords.map(
-	         (coord) => ([coord[0], (coord[1] + 1)])
-	       );
-	       break;
-	      }
-	      case MOVES.DOWN: {
-	        newCoords = this.pieceCoords.map(
-	         (coord) => ([coord[0] + 1, (coord[1])])
-	       );
-	       break;
-	     }
-	     case MOVES.ROTATE: {
-	       if (this.pieceType === "O") {
-	         break;
-	       } else {
-	         relativeVectors = this.pieceCoords.map(
-	           (coord) => ([(coord[0] - this.pieceOrigin()[0]), (coord[1] - this.pieceOrigin()[1])])
-	         );
-	
-	         transformedVectors = relativeVectors.map(
-	           (coord) => ([(0*coord[0] + -1*coord[1]), (1*coord[0] + 0*coord[1])])
-	         );
-	
-	         newCoords = transformedVectors.map(
-	           (coord) => ([ (coord[0] + this.pieceOrigin()[0]), (coord[1] + this.pieceOrigin()[1]) ])
-	         );
-	         break;
-	       }
-	     }
-	      default:
-	    }
-	
-	    newCoords = newCoords || this.pieceCoords;
-	
-	    const validMove = this.validMove(this.pieceCoords, newCoords);
-	
-	    if(validMove) {
-	      this.unoccupyCells();
-	      this.pieceCoords = newCoords;
-	      this.occupyCells();
-	    }
-	    return validMove;
-	  }
-	
-	  validMove(oldCoords, newCoords) {
-	    let valid = true;
-	
-	    const oldCoordsStringify = oldCoords.map( (coord) => {
-	      return JSON.stringify(coord);
-	    });
-	
-	
-	      const filteredCoords = newCoords.filter( (coord) => {
-	        return !oldCoordsStringify.includes(JSON.stringify(coord));
-	      });
-	
-	
-	    filteredCoords.forEach( (coord) => {
-	      if (($(`ul[data=${coord[0]}] li[data=${coord[1]}]`).attr('empty') !== "true")
-	        || coord[1] < 0
-	          || coord[1] > 9) {
-	          valid = false;
-	          return valid;
-	        }
-	    });
-	    return valid;
-	  }
-	
-	}
-	
-	module.exports = Piece;
+	module.exports = { modal,
+	        $modal,
+	        $overlay,
+	        $instructions,
+	        $play,
+	        $instructionsTitle,
+	        $moveUp,
+	        $moveLeft,
+	        $moveRight,
+	        $moveDown
+	      };
 
 
 /***/ }
