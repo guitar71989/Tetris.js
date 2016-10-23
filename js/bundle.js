@@ -125,8 +125,7 @@
 	    this.$el = $el;
 	    this.board = new Board;
 	    this.setupGrid();
-	
-	
+	    this.gravity = this.gravity.bind(this);
 	}
 	
 	
@@ -174,12 +173,29 @@
 	    if (window.currentPiece.move("down")) {
 	      // window.currentPiece.move("down");
 	    } else {
+	      for (var i = 0; i < this.board.height; i++) {
+	        if ($(`ul[data=${i}] li[empty=${true}]`).length === 0) {
+	            for (var j = 0; j < this.board.width; j++) {
+	              $(`ul[data=${i}] li[data=${j}]`)
+	                .removeClass('red')
+	                .removeClass('purple')
+	                .removeClass('blue')
+	                .removeClass('yellow')
+	                .removeClass('orange')
+	                .removeClass('green')
+	                .removeClass('grey');
+	              $(`ul[data=${i}] li[data=${j}]`)
+	                .attr('empty', 'true');
+	
+	            }
+	          }
+	        }
+	
 	      this.currentPiece = new Piece();
 	      window.currentPiece = this.currentPiece;
+	      }
+	
 	    }
-	  }
-	
-	
 	
 	}
 	
