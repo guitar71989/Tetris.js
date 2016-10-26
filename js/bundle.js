@@ -84,8 +84,9 @@
 	    this.board = new Board;
 	    this.setupGrid();
 	    this.gravity = this.gravity.bind(this);
-	    this.gameOver = false;
 	    this.gamePaused = false;
+	    this.currentPiece = null;
+	    this.nextPiece = null;
 	}
 	
 	
@@ -103,7 +104,6 @@
 	
 	    this.$el.html(html);
 	    this.$li = this.$el.find("li");
-	
 	  }
 	
 	  startGame() {
@@ -115,9 +115,16 @@
 	
 	    $pause.show();
 	
-	    const currentPiece = new Piece;
+	    this.currentPiece = new Piece;
+	    window.currentPiece = this.currentPiece;
+	    this.currentPiece.occupyCells();
 	
-	    window.currentPiece = currentPiece;
+	
+	    if (!this.nextPiece) {
+	        this.nextPiece = new Piece;
+	    }
+	
+	    this.addToPreview(this.nextPiece);
 	
 	    window.interval = setInterval(this.gravity, 500);
 	
@@ -127,7 +134,7 @@
 	  }
 	
 	  gravity(){
-	    if (window.currentPiece.move("down")) {
+	    if (this.currentPiece.move("down")) {
 	      // window.currentPiece.move("down");
 	    } else {
 	      for (var i = 0; i < this.board.height; i++) {
@@ -161,8 +168,11 @@
 	        }
 	
 	      if (!this.gameOver) {
-	        this.currentPiece = new Piece();
+	        this.currentPiece = this.nextPiece;
+	        this.removefromPreview(this.nextPiece);
 	        window.currentPiece = this.currentPiece;
+	        this.nextPiece = new Piece;
+	        this.addToPreview(this.nextPiece);
 	      }
 	
 	      if (!this.currentPiece.move("down")) {
@@ -208,8 +218,20 @@
 	    endGame() {
 	      window.clearInterval(window.interval);
 	      $(window).off('keydown');
+	      this.removefromPreview(this.nextPiece);
+	      this.currentPiece = null;
+	      this.nextPiece = null;
+	      window.currentPiece = null;
 	    }
 	
+	
+	    addToPreview(piece){
+	      piece.occupyPreview();
+	    }
+	
+	    removefromPreview(piece){
+	      piece.unoccupyPreview();
+	    }
 	
 	    pauseGame() {
 	      window.clearInterval(window.interval);
@@ -354,7 +376,6 @@
 	    this.pieceType = this.randPiece[0];
 	    this.pieceCoords = this.randPiece[1];
 	    this.pieceColor = this.randPiece[2];
-	    this.occupyCells();
 	    this.validMove.bind(this);
 	  }
 	
@@ -455,6 +476,18 @@
 	    return valid;
 	  }
 	
+	  occupyPreview() {
+	    this.pieceCoords.forEach( (coord) => {
+	      coord.occupyPreview();
+	    });
+	  }
+	
+	  unoccupyPreview() {
+	    this.pieceCoords.forEach( (coord) => {
+	      coord.unoccupyPreview();
+	    });
+	  }
+	
 	}
 	
 	module.exports = Piece;
@@ -472,9 +505,9 @@
 	  }
 	
 	    occupyCell() {
-	      $(`ul[data=${this.y}] li[data=${this.x}]`)
+	      $(`div[class=tetris-grid] ul[data=${this.y}] li[data=${this.x}]`)
 	        .addClass(`${this.color}`);
-	      $(`ul[data=${this.y}] li[data=${this.x}]`)
+	      $(`div[class=tetris-grid] ul[data=${this.y}] li[data=${this.x}]`)
 	        .attr('empty', 'false');
 	    }
 	
@@ -497,6 +530,24 @@
 	
 	    inBounds() {
 	      return (this.x >= 0 && this.x <= 9 && this.y >= 0 && this.y <= 19);
+	    }
+	
+	    occupyPreview(){
+	      $(`div[class=nextPiece-ctn]
+	        ul[data=${this.y + 1}]
+	        li[data=${this.x - 3}]`)
+	        .addClass(`${this.color}`)
+	        .addClass('withborder')
+	        .attr('empty', false);
+	    }
+	
+	    unoccupyPreview(){
+	      $(`div[class=nextPiece-ctn]
+	        ul[data=${this.y + 1}]
+	        li[data=${this.x - 3}]`)
+	        .removeClass(`${this.color}`)
+	        .removeClass('withborder')
+	        .attr('empty', true);
 	    }
 	
 	}

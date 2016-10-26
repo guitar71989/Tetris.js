@@ -9,8 +9,9 @@ class View {
     this.board = new Board;
     this.setupGrid();
     this.gravity = this.gravity.bind(this);
-    this.gameOver = false;
     this.gamePaused = false;
+    this.currentPiece = null;
+    this.nextPiece = null;
 }
 
 
@@ -28,7 +29,6 @@ class View {
 
     this.$el.html(html);
     this.$li = this.$el.find("li");
-
   }
 
   startGame() {
@@ -40,9 +40,16 @@ class View {
 
     $pause.show();
 
-    const currentPiece = new Piece;
+    this.currentPiece = new Piece;
+    window.currentPiece = this.currentPiece;
+    this.currentPiece.occupyCells();
 
-    window.currentPiece = currentPiece;
+
+    if (!this.nextPiece) {
+        this.nextPiece = new Piece;
+    }
+
+    this.addToPreview(this.nextPiece);
 
     window.interval = setInterval(this.gravity, 500);
 
@@ -52,7 +59,7 @@ class View {
   }
 
   gravity(){
-    if (window.currentPiece.move("down")) {
+    if (this.currentPiece.move("down")) {
       // window.currentPiece.move("down");
     } else {
       for (var i = 0; i < this.board.height; i++) {
@@ -86,8 +93,11 @@ class View {
         }
 
       if (!this.gameOver) {
-        this.currentPiece = new Piece();
+        this.currentPiece = this.nextPiece;
+        this.removefromPreview(this.nextPiece);
         window.currentPiece = this.currentPiece;
+        this.nextPiece = new Piece;
+        this.addToPreview(this.nextPiece);
       }
 
       if (!this.currentPiece.move("down")) {
@@ -133,8 +143,20 @@ class View {
     endGame() {
       window.clearInterval(window.interval);
       $(window).off('keydown');
+      this.removefromPreview(this.nextPiece);
+      this.currentPiece = null;
+      this.nextPiece = null;
+      window.currentPiece = null;
     }
 
+
+    addToPreview(piece){
+      piece.occupyPreview();
+    }
+
+    removefromPreview(piece){
+      piece.unoccupyPreview();
+    }
 
     pauseGame() {
       window.clearInterval(window.interval);
