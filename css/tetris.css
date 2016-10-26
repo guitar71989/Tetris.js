@@ -166,3 +166,35 @@ h1 img {
   key-instruction-ctn p.rotatetext {
     margin-left: 100px;
   }
+
+  .pause-btn {
+    width: 50px;
+    height: 50px;
+    background: green;
+    align-self: flex-end;
+    margin: 0 0 20px 20px;
+    border-radius: 20%;
+    background:url(tint20.png) 0 0 repeat;
+    background:rgba(0,0,0,0.2);
+    background: #fff;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .pause-btn:focus {
+    outline:0;
+  }
+
+  .main-ctn {
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+  }
+
+  .entire-screen {
+    display: flex;
+  }
+
+  .pause-char {
+    margin-left: 4px;
+  }

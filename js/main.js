@@ -4,7 +4,10 @@ const Modal = require('./../lib/modal.js');
 
 
 $( () => {
-  const rootEl = $('.tetris-game');
+  const $pause = $('pause-btn');
+  $pause.hide();
+
+  const rootEl = $('.tetris-board');
 
   $('body').append(Modal.$overlay, Modal.$modal);
 
@@ -14,7 +17,7 @@ $( () => {
     Modal.modal.close();
     newGame.startGame();
   });
-
   const newGame = new View(rootEl);
+
 
 });

@@ -10,11 +10,12 @@ class View {
     this.setupGrid();
     this.gravity = this.gravity.bind(this);
     this.gameOver = false;
+    this.gamePaused = false;
 }
 
 
   setupGrid() {
-    let html = "";
+    let html = "<div class='tetris-grid'>";
 
     for (let i = 0; i < this.board.height; i++) {
       html += `<ul data=${i} >`;
@@ -23,6 +24,7 @@ class View {
       }
       html += "</ul>";
     }
+    html += "</div>";
 
     this.$el.html(html);
     this.$li = this.$el.find("li");
@@ -30,32 +32,26 @@ class View {
   }
 
   startGame() {
+    const $pause = $(".pause-btn");
+    const view = this;
+    $pause.on("click", function(){
+      !view.gamePaused ? view.pauseGame() : view.resumeGame();
+    });
+
+    $pause.show();
+
     const currentPiece = new Piece;
 
     window.currentPiece = currentPiece;
 
     window.interval = setInterval(this.gravity, 500);
 
-    $(window).keydown(function (e) {
-       if (e.keyCode === 37) {
-           e.preventDefault();
-           window.currentPiece.move('left');
-       } else if (e.keyCode === 39) {
-           e.preventDefault();
-           window.currentPiece.move('right');
-       } else if (e.keyCode === 38) {
-            e.preventDefault();
-            window.currentPiece.move('rotate');
-        } else if (e.keyCode === 40) {
-            e.preventDefault();
-            window.currentPiece.move('down');
-       }
-     }
+    $(window).keydown(
+      this.addKeydownListeners
    );
   }
 
   gravity(){
-    console.log("hello")
     if (window.currentPiece.move("down")) {
       // window.currentPiece.move("down");
     } else {
@@ -118,12 +114,43 @@ class View {
 
     }
 
+    addKeydownListeners (e) {
+       if (e.keyCode === 37) {
+           e.preventDefault();
+           window.currentPiece.move('left');
+       } else if (e.keyCode === 39) {
+           e.preventDefault();
+           window.currentPiece.move('right');
+       } else if (e.keyCode === 38) {
+            e.preventDefault();
+            window.currentPiece.move('rotate');
+        } else if (e.keyCode === 40) {
+            e.preventDefault();
+            window.currentPiece.move('down');
+       }
+     }
+
     endGame() {
       window.clearInterval(window.interval);
       $(window).off('keydown');
     }
 
 
+    pauseGame() {
+      window.clearInterval(window.interval);
+      $(".pause-btn").html("&#9654");
+      $(window).off('keydown');
+      this.gamePaused = true;
+    }
+
+    resumeGame() {
+      window.interval = setInterval(this.gravity, 500);
+      $(".pause-btn").html("&nbsp &#9612 &#9612");
+      $(window).keydown(
+        this.addKeydownListeners
+     );
+      this.gamePaused = false;
+    }
 }
 
 module.exports = View;
