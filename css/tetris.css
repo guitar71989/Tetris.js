@@ -43,7 +43,8 @@ ul {
 li {
   height: 40px;
   width: 40px;
-  border: 1px solid #fff;
+  border: 1px solid #0d0d0d;
+  border-width: -1px;;
 }
 
 h1 img {
@@ -169,22 +170,8 @@ h1 img {
     margin-left: 100px;
   }
 
-  .pause-btn {
-    width: 50px;
-    height: 50px;
-    background: green;
-    margin: 440px 0 20px 20px;
-    border-radius: 20%;
-    background:url(tint20.png) 0 0 repeat;
-    background:rgba(0,0,0,0.2);
-    background: #fff;
-    text-align: center;
-    font-weight: bold;
-  }
 
-  .pause-btn:focus {
-    outline:0;
-  }
+  /* Main Container */
 
   .main-ctn {
     display: flex;
@@ -196,9 +183,15 @@ h1 img {
     display: flex;
   }
 
-  .pause-char {
-    margin-left: 4px;
+
+  .tetris-grid {
+    border: 1px solid #fff;
   }
+
+
+
+  /* Right Container */
+
 
   .right-ctn {
     display: flex;
@@ -207,13 +200,84 @@ h1 img {
     margin: 120px 0 20px 0;
   }
 
-  .nextPiece-ctn {
-    padding: 30px;
-    margin: 20px;
-    border: none;
-  }
 
   .right-ctn h1 {
     font-size: 30px;
     margin-bottom: 20px;
+    color: #fff;
+  }
+
+  .right-ctn li {
+    border: 1px solid #000;
+  }
+
+  /* Next Piece Container */
+
+  .nextPiece-ctn {
+    padding: 30px;
+    margin: -9px 0 0 40px;
+    border: 1px solid #fff;
+
+  }
+
+  /* Pause Button */
+
+    .pause-char {
+      margin-left: 4px;
+    }
+
+    .pause-btn {
+      width: 50px;
+      height: 50px;
+      background: green;
+      margin: 440px 0 20px 20px;
+      border-radius: 20%;
+      background:url(tint20.png) 0 0 repeat;
+      background:rgba(0,0,0,0.2);
+      background: #fff;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .pause-btn:focus {
+      outline:0;
+    }
+
+  /* Left Container */
+
+  .left-ctn {
+    display: flex;
+
+    flex-direction: column;
+    justify-content: flex-end;
+    margin: 120px 0 20px 0;
+    color: #fff;
+  }
+
+  .score-ctn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 30px;
+    margin: 0 20px 0px 20px;
+    border: 1px solid #fff;
+    width: 200px;
+    height: 300px;
+  }
+
+  .left-ctn h1 {
+    font-size: 30px;
+    margin: 30px;
+  }
+
+  .left-ctn p {
+    font-size: 24px;
+  }
+
+  .score-result {
+    display: block;
+    text-align: center;
+    height: 12px;
+    padding: 11px 0 0 0;
+    border: 1px solid #fff;
   }
