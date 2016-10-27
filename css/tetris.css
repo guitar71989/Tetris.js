@@ -223,20 +223,22 @@ h1 img {
   /* Pause Button */
 
     .pause-char {
-      margin-left: 4px;
+      margin-left: 10px;
     }
 
     .pause-btn {
-      width: 50px;
-      height: 50px;
+      width: 80px;
+      height: 80px;
       background: green;
-      margin: 440px 0 20px 20px;
+      margin: 440px 0 0 300px;
       border-radius: 20%;
       background:url(tint20.png) 0 0 repeat;
       background:rgba(0,0,0,0.2);
       background: #fff;
       text-align: center;
       font-weight: bold;
+      font-size: 23px;
+
     }
 
     .pause-btn:focus {

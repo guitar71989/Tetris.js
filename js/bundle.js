@@ -91,6 +91,7 @@
 	    this.score = null;
 	    this.level = null;
 	    this.gameOver = null;
+	    this.timeout = null;
 	}
 	
 	
@@ -111,6 +112,8 @@
 	  }
 	
 	  startGame() {
+	    clearTimeout(this.timeout);
+	    this.timeout = null;
 	    this.numLines = 0;
 	    this.score = 0;
 	    this.level = 0;
@@ -140,7 +143,7 @@
 	
 	    this.addToPreview(this.nextPiece);
 	
-	    window.interval = setInterval(this.gravity, 500);
+	    this.timeout = setTimeout(this.gravity, 500);
 	
 	    $(window).keydown(
 	      this.addKeydownListeners
@@ -159,10 +162,10 @@
 	          this.numLines += 1;
 	          lines += 1;
 	
-	          if (this.lines >= 10 && this.lines % 10 === 0) {
+	          // if (this.lines >= 10 && this.lines % 10 === 0) {
 	            this.level += 1;
-	          }
-	
+	            // this.increaseSpeed();
+	          // }
 	          $(".lines-result").html(`${this.numLines}`);
 	          $(".lines-level").html(`${this.level}`);
 	
@@ -207,7 +210,7 @@
 	
 	        $('#play').click(function () {
 	          Modal.modal.close();
-	          window.clearInterval(window.interval);
+	          clearTimeout(view.interval);
 	          $(window).off('keydown');
 	          view.setupGrid();
 	          view.startGame();
@@ -215,7 +218,7 @@
 	
 	      }
 	    }
-	
+	    this.timeout = setTimeout(this.gravity, 500 - (this.level*50));
 	  }
 	
 	    addKeydownListeners (e) {
@@ -235,7 +238,8 @@
 	     }
 	
 	    endGame() {
-	      window.clearInterval(window.interval);
+	      clearTimeout(this.timeout);
+	      this.timeout = null;
 	      $(window).off('keydown');
 	      this.removefromPreview(this.nextPiece);
 	      this.currentPiece = null;
@@ -253,14 +257,15 @@
 	    }
 	
 	    pauseGame() {
-	      window.clearInterval(window.interval);
+	      clearTimeout(this.timeout);
+	      this.timeout = null;
 	      $(".pause-btn").html("&#9654");
 	      $(window).off('keydown');
 	      this.gamePaused = true;
 	    }
 	
 	    resumeGame() {
-	      window.interval = setInterval(this.gravity, 500);
+	      this.timeout = setTimeout(this.gravity, 500 - 50*this.level);
 	      $(".pause-btn").html("&nbsp &#9612 &#9612");
 	      $(window).keydown(
 	        this.addKeydownListeners
@@ -597,18 +602,16 @@
 	    occupyPreview(){
 	      $(`div[class=nextPiece-ctn]
 	        ul[data=${this.y + 1}]
-	        li[data=${this.x - 3}]`)
+	        li[data=${this.x - 2}]`)
 	        .addClass(`${this.color}`)
-	        .attr('id', 'withborder')
 	        .attr('empty', false);
 	    }
 	
 	    unoccupyPreview(){
 	      $(`div[class=nextPiece-ctn]
 	        ul[data=${this.y + 1}]
-	        li[data=${this.x - 3}]`)
+	        li[data=${this.x - 2}]`)
 	        .removeClass(`${this.color}`)
-	        .removeAttr('withborder')
 	        .attr('empty', true);
 	    }
 	
