@@ -162,10 +162,10 @@
 	          this.numLines += 1;
 	          lines += 1;
 	
-	          if (this.lines >= 10 && this.lines % 10 === 0) {
+	          if (this.numlines >= 10 && this.lines % 10 === 0) {
 	            this.level += 1;
 	          }
-	
+	          
 	          $(".lines-result").html(`${this.numLines}`);
 	          $(".lines-level").html(`${this.level}`);
 	
