@@ -274,7 +274,7 @@ h1 img {
     font-size: 24px;
   }
 
-  .score-result {
+  .score-result, .level-result, .lines-result {
     display: block;
     text-align: center;
     height: 12px;

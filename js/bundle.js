@@ -87,13 +87,17 @@
 	    this.gamePaused = false;
 	    this.currentPiece = null;
 	    this.nextPiece = null;
+	    this.numLines = null;
+	    this.score = null;
+	    this.level = null;
+	    this.gameOver = null;
 	}
 	
 	
 	  setupGrid() {
 	    let html = "<div class='tetris-grid'>";
 	
-	    for (let i = 0; i < this.board.height; i++) {
+	    for (let i = 2; i < this.board.height + 2; i++) {
 	      html += `<ul data=${i} >`;
 	      for (var j = 0; j < this.board.width; j++) {
 	        html += `<li empty=${true} data=${j}></li>`;
@@ -107,6 +111,16 @@
 	  }
 	
 	  startGame() {
+	    this.numLines = 0;
+	    this.score = 0;
+	    this.level = 0;
+	    this.gameOver = false;
+	
+	    $(".lines-result").html(`${this.numLines}`);
+	    $(".score-result").html(`${this.score}`);
+	    $(".level-result").html(`${this.level}`);
+	
+	
 	    const $pause = $(".pause-btn");
 	    const view = this;
 	    $pause.on("click", function(){
@@ -137,35 +151,40 @@
 	    if (this.currentPiece.move("down")) {
 	      // window.currentPiece.move("down");
 	    } else {
-	      for (var i = 0; i < this.board.height; i++) {
-	        if ($(`ul[data=${i}] li[empty=${true}]`).length === 0) {
-	            for (var j = 0; j < this.board.width; j++) {
-	              $(`ul[data=${i}] li[data=${j}]`)
-	                .removeClass("red")
-	                .removeClass("green")
-	                .removeClass("yellow")
-	                .removeClass("blue")
-	                .removeClass("orange")
-	                .removeClass("green")
-	                .removeClass("purple")
-	                .removeClass("grey")
-	                .attr("empty", `${true}`);
-	            }
+	      let lines = 0;
+	      for (var i = 2; i < this.board.height + 2; i++) {
 	
-	            for (var y = i - 1; y > 0; y--) {
-	                for (var x = 0; x < this.board.width; x++) {
-	                  const color = $(`ul[data=${y}] li[data=${x}]`).attr("class");
-	                  const pos = [y, x];
-	                  const coord = new Coord(pos, color);
-	                  const newCoord = new Coord([coord.y + 1, coord.x], coord.color);
-	                  if (!coord.empty()) {
-	                    coord.unoccupyCell();
-	                    newCoord.occupyCell();
-	                  }
-	                }
+	        if ($(`ul[data=${i}] li[empty=${true}]`).length === 0) {
+	          this.clearRow(i);
+	          this.numLines += 1;
+	          lines += 1;
+	
+	          if (this.lines >= 10 && this.lines % 10 === 0) {
+	            this.level += 1;
+	          }
+	
+	          $(".lines-result").html(`${this.numLines}`);
+	          $(".lines-level").html(`${this.level}`);
+	
+	          for (var y = i - 1; y > 0; y--) {
+	            for (var x = 0; x < this.board.width; x++) {
+	              const color = $(`ul[data=${y}] li[data=${x}]`).attr("class");
+	              const pos = [y, x];
+	              const coord = new Coord(pos, color);
+	              const newCoord = new Coord([coord.y + 1, coord.x], coord.color);
+	              if (!coord.empty()) {
+	                coord.unoccupyCell();
+	                newCoord.occupyCell();
 	              }
+	            }
 	          }
 	        }
+	
+	      }
+	      this.updateScore(lines);
+	
+	
+	      $(".score-result").html(`${this.score}`);
 	
 	      if (!this.gameOver) {
 	        this.currentPiece = this.nextPiece;
@@ -176,6 +195,7 @@
 	      }
 	
 	      if (!this.currentPiece.move("down")) {
+	        this.gameOver = true;
 	        this.endGame();
 	
 	        Modal.$modal.hide();
@@ -194,10 +214,9 @@
 	        });
 	
 	      }
-	
-	      }
-	
 	    }
+	
+	  }
 	
 	    addKeydownListeners (e) {
 	       if (e.keyCode === 37) {
@@ -247,6 +266,45 @@
 	        this.addKeydownListeners
 	     );
 	      this.gamePaused = false;
+	    }
+	
+	    clearRow(i) {
+	      for (var j = 0; j < this.board.width; j++) {
+	        $(`ul[data=${i}] li[data=${j}]`)
+	        .removeClass("red")
+	        .removeClass("green")
+	        .removeClass("yellow")
+	        .removeClass("blue")
+	        .removeClass("orange")
+	        .removeClass("green")
+	        .removeClass("purple")
+	        .removeClass("grey")
+	        .attr("empty", `${true}`);
+	      }
+	    }
+	
+	    updateScore(lines) {
+	      switch(lines) {
+	          case 4: {
+	            this.score += 800;
+	            break;
+	          }
+	          case 3: {
+	            this.score += 400;
+	            break;
+	          }
+	          case 2: {
+	            this.score += 200;
+	            break;
+	          }
+	          case 1: {
+	            this.score += 100;
+	            break;
+	          }
+	          default: {
+	            break;
+	          }
+	        }
 	    }
 	}
 	
@@ -512,9 +570,9 @@
 	    }
 	
 	    unoccupyCell() {
-	      $(`ul[data=${this.y}] li[data=${this.x}]`)
+	      $(`div[class=tetris-grid] ul[data=${this.y}] li[data=${this.x}]`)
 	        .removeClass(`${this.color}`);
-	      $(`ul[data=${this.y}] li[data=${this.x}]`)
+	      $(`div[class=tetris-grid] ul[data=${this.y}] li[data=${this.x}]`)
 	        .attr('empty', 'true');
 	    }
 	
@@ -523,13 +581,17 @@
 	    }
 	
 	    empty() {
-	      return ($(`ul[data=${this.y}]
-	        li[data=${this.x}]`)
-	        .attr('empty') === "true");
+	      const $cell = ($(`div[class=tetris-grid]
+	        ul[data=${this.y}]
+	        li[data=${this.x}]`
+	      ));
+	      return (
+	        $cell.attr('empty') === "true" || $cell.attr('empty') === undefined
+	      );
 	    }
 	
 	    inBounds() {
-	      return (this.x >= 0 && this.x <= 9 && this.y >= 0 && this.y <= 19);
+	      return (this.x >= 0 && this.x <= 9 && this.y >= 0 && this.y <= 21);
 	    }
 	
 	    occupyPreview(){
