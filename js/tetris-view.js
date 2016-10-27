@@ -87,10 +87,10 @@ class View {
           this.numLines += 1;
           lines += 1;
 
-          // if (this.lines >= 10 && this.lines % 10 === 0) {
+          if (this.lines >= 10 && this.lines % 10 === 0) {
             this.level += 1;
-            // this.increaseSpeed();
-          // }
+          }
+
           $(".lines-result").html(`${this.numLines}`);
           $(".lines-level").html(`${this.level}`);
 
