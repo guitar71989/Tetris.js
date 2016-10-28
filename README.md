@@ -25,10 +25,12 @@ call them. Within jQuery's version the DOMContentLoaded event listener,
 I opened the modal.
 
 Code Snippet:
+
 ![Modal Code](./screenshots/modal.png)
 
 
 User View:
+
 ![Play Game Modal](./screenshots/playmodal.png)
 
 
