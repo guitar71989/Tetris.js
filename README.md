@@ -11,10 +11,10 @@ CSS3.
 
 ## Controls:
 
-  * &#2190; move block left
-  * &#2192; move block right
-  * &#2191; rotate block 90 degress clockwise
-  * &#2193; soft drop
+  * ← move block left
+  * → move block right
+  * ↑ rotate block 90 degrees clockwise
+  * ↓ soft drop
 
 ## Screenshots
 
