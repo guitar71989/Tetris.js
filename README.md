@@ -11,7 +11,17 @@ CSS3.
 
 ## Controls:
 
-  * &#2190 move block left
+  * &#2190; move block left
+  * &#2192; move block right
+  * &#2191; rotate block 90 degress clockwise
+  * &#2193; soft drop
+
+## Screenshots
+
+![Play Game Modal](./screenshots/playmodal.png)
+
+
+
 
 
 
