@@ -1,7 +1,7 @@
 const Board = require('./../lib/board.js');
 const Piece = require('./../lib/piece.js');
 const Coord = require('./../lib/coord.js');
-const Modal = require('./../lib/modal.js');
+const GameOver = require('./../lib/game_over_modal.js');
 
 class View {
   constructor($el) {
@@ -51,9 +51,12 @@ class View {
 
     const $pause = $(".pause-btn");
     const view = this;
-    $pause.on("click", function(){
-      !view.gamePaused ? view.pauseGame() : view.resumeGame();
-    });
+
+    if (!$._data( $pause[0], 'events' )) {
+      $pause.on("click", function(){
+        !view.gamePaused ? view.pauseGame() : view.resumeGame();
+      });
+    }
 
     $pause.show();
 
@@ -126,15 +129,17 @@ class View {
         this.gameOver = true;
         this.endGame();
 
-        Modal.$modal.hide();
-        Modal.$overlay.hide();
+        $('body').append(GameOver.$overlay, GameOver.$modal);
 
-        Modal.modal.open();
+        GameOver.$modal.hide();
+        GameOver.$overlay.hide();
+
+        GameOver.modal.open();
 
         const view = this;
 
-        $('#play').click(function () {
-          Modal.modal.close();
+        $('#playagain').click(function () {
+          GameOver.modal.close();
           clearTimeout(view.interval);
           $(window).off('keydown');
           view.setupGrid();
