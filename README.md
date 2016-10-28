@@ -11,7 +11,7 @@ CSS3.
 
 ## Controls:
 
-  * #&2190 move block left
+  * &#2190 move block left
 
 
 
