@@ -43,3 +43,24 @@ tetris board. The score level and lines are all set at zero when the game
 starts as well.
 
 ![Game View](./screenshots/gameview.png)
+
+## Moving Pieces
+
+When a user wants to move a piece, a keydown listener and switch-case
+statement translates the given keycode into a move on the piece object.
+
+To successfully move a piece, I first move the piece to the intended location,
+check to see if that is a valid move, and if it is, then I complete the move.
+Otherwise, the piece remains in the same position.
+
+While moving left, right, and down, were simple changes to the y and x coordinates,
+rotating pieces used vector matrix logic. Specifically, I assigned a center
+block for each piece, find each blocks relative vector to this block, rotate that vector, and then translate it back to its absolute position.
+
+To keep my code DRY, I created a Coord class to handle the movements of the individual cells within a piece as well as non-piece movements.
+blocks into Javascript and a switch case
+
+[logo]:(http://gph.is/2eEuR42) Title Text 2"
+
+
+![Game View](./screenshots/gameview.png)
