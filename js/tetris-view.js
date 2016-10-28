@@ -90,9 +90,9 @@ class View {
           if (this.numlines >= 10 && this.lines % 10 === 0) {
             this.level += 1;
           }
-          
+
           $(".lines-result").html(`${this.numLines}`);
-          $(".lines-level").html(`${this.level}`);
+          $(".level-result").html(`${this.level}`);
 
           for (var y = i - 1; y > 0; y--) {
             for (var x = 0; x < this.board.width; x++) {

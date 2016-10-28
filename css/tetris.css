@@ -41,16 +41,17 @@ ul {
 }
 
 li {
-  height: 40px;
-  width: 40px;
+  height: 25px;
+  width: 25px;
   border: 1px solid #0d0d0d;
   border-width: -1px;;
 }
 
 h1 img {
-  padding: 20px 0;
+  padding: 10px 0;
+  margin-bottom: -4px;
   width: 187.5px;
-  height: 60px;
+  height: 50px;
 }
 
 
@@ -171,6 +172,13 @@ h1 img {
   }
 
 
+
+  .entire-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   /* Main Container */
 
   .main-ctn {
@@ -179,7 +187,7 @@ h1 img {
     flex-direction: column;
   }
 
-  .entire-screen {
+  .center-ctn {
     display: flex;
   }
 
@@ -189,15 +197,15 @@ h1 img {
   }
 
 
-
   /* Right Container */
 
 
   .right-ctn {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     margin: 120px 0 20px 0;
+    width: 200px;
   }
 
 
@@ -214,8 +222,8 @@ h1 img {
   /* Next Piece Container */
 
   .nextPiece-ctn {
-    padding: 30px;
-    margin: -9px 0 0 40px;
+    padding-top: 10px;
+    margin: -30px 0 0 20px;
     border: 1px solid #fff;
 
   }
@@ -227,17 +235,14 @@ h1 img {
     }
 
     .pause-btn {
-      width: 80px;
-      height: 80px;
-      background: green;
-      margin: 440px 0 0 300px;
+      width: 60px;
+      margin-left: 141px;
+      height: 60px;
       border-radius: 20%;
-      background:url(tint20.png) 0 0 repeat;
-      background:rgba(0,0,0,0.2);
       background: #fff;
       text-align: center;
       font-weight: bold;
-      font-size: 23px;
+      font-size: 14px;
 
     }
 
@@ -249,10 +254,8 @@ h1 img {
 
   .left-ctn {
     display: flex;
-
     flex-direction: column;
     justify-content: flex-end;
-    margin: 120px 0 20px 0;
     color: #fff;
   }
 
@@ -261,15 +264,15 @@ h1 img {
     flex-direction: column;
     justify-content: space-around;
     padding: 30px;
-    margin: 0 20px 0px 20px;
+    margin: 0 40px 20px 0px;
     border: 1px solid #fff;
-    width: 200px;
-    height: 300px;
+    width: 150px;
+    height: 200px;
   }
 
   .left-ctn h1 {
     font-size: 30px;
-    margin: 30px;
+    margin: 20px;
   }
 
   .left-ctn p {
@@ -282,4 +285,64 @@ h1 img {
     height: 12px;
     padding: 11px 0 0 0;
     border: 1px solid #fff;
+  }
+
+  .footer {
+    color: #fff;
+    font-size: 16px;
+    font-weight: lighter;
+    line-height: 1.66px;
+    width: 1120px;
+    text-align: center;
+    margin-top: -20px;
+  }
+
+  .footer h3 {
+    font-weight: normal;
+  }
+
+  .footer ul {
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer li {
+    display:flex;
+    color: #fff;
+    display: block;
+    padding: 0 80px;
+    border: none;
+  }
+
+  .logos {
+			display: flex;
+			justify-content: center;
+			margin: 0px;
+			padding: 0px;
+
+	}
+
+	.logo {
+		padding: 0px;
+    border: none;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+    align-items: center;
+		list-style: none;
+		height: 30px;
+		width: 30px;
+	}
+
+  .title1 {
+    margin-left: -10px;
+  }
+
+  .title2 {
+    margin-left: -5px;
+  }
+
+
+  .title3 {
+    margin-left: -10px;
   }
