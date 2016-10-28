@@ -60,7 +60,4 @@ block for each piece, find each blocks relative vector to this block, rotate tha
 To keep my code DRY, I created a Coord class to handle the movements of the individual cells within a piece as well as non-piece movements.
 blocks into Javascript and a switch case
 
-[logo]:(http://gph.is/2eEuR42) Title Text 2"
-
-
-![Game View](./screenshots/gameview.png)
+![Game View](./screenshots/rotatecode.png)
