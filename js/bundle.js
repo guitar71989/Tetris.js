@@ -46,7 +46,7 @@
 
 	const View = __webpack_require__(1);
 	const Piece = __webpack_require__(3);
-	const Modal = __webpack_require__(5);
+	const Modal = __webpack_require__(6);
 	
 	
 	$( () => {
@@ -76,7 +76,7 @@
 	const Board = __webpack_require__(2);
 	const Piece = __webpack_require__(3);
 	const Coord = __webpack_require__(4);
-	const GameOver = __webpack_require__(6);
+	const GameOver = __webpack_require__(5);
 	
 	class View {
 	  constructor($el) {
@@ -629,6 +629,59 @@
 /* 5 */
 /***/ function(module, exports) {
 
+	const $overlay = $('<div id="gameoveroverlay"></div>');
+	const $modal = $('<div id="gameovermodal"></div>');
+	const $play = $('');
+	
+	const $pic = ('<div id="graphic"><img width="100%"  height="100%" src="./assets/gameover.gif" controls="controls"> </img><button id="playagain" href="#">Click here to play again</a></div>');
+	
+	$modal.hide();
+	$overlay.hide();
+	$modal.append($play, $pic);
+	
+	var modal = (function(){
+	  var method = {};
+	
+	  method.center =  function () {
+	    var top, left;
+	
+	    top = 200;
+	    left = Math.max($(window).width() - $modal.outerWidth(), 0) / 2;
+	
+	    $modal.css({
+	      top:top + $(window).scrollTop(),
+	      left:left + $(window).scrollLeft()
+	    });
+	  };
+	
+	  method.open = function () {
+	    method.center();
+	    $(window).bind('resize.modal', method.center);
+	    $modal.show();
+	    $overlay.show();
+	  };
+	
+	  method.close = function () {
+	    $modal.hide();
+	    $overlay.hide();
+	  };
+	
+	  return method;
+	}());
+	
+	
+	module.exports = { modal,
+	        $modal,
+	        $overlay,
+	        $play,
+	        $pic
+	      };
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
 	const $overlay = $('<div id="overlay"></div>');
 	const $modal = $('<div id="modal"></div>');
 	const $play = $('<button id="play" href="#">Play</a>');
@@ -687,59 +740,6 @@
 	        $moveLeft,
 	        $moveRight,
 	        $moveDown
-	      };
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	const $overlay = $('<div id="gameoveroverlay"></div>');
-	const $modal = $('<div id="gameovermodal"></div>');
-	const $play = $('');
-	
-	const $pic = ('<div id="graphic"><img width="100%"  height="100%" src="./assets/game_over.gif" controls="controls"> </img><button id="playagain" href="#">Click here to play again</a></div>');
-	
-	$modal.hide();
-	$overlay.hide();
-	$modal.append($play, $pic);
-	
-	var modal = (function(){
-	  var method = {};
-	
-	  method.center =  function () {
-	    var top, left;
-	
-	    top = 200;
-	    left = Math.max($(window).width() - $modal.outerWidth(), 0) / 2;
-	
-	    $modal.css({
-	      top:top + $(window).scrollTop(),
-	      left:left + $(window).scrollLeft()
-	    });
-	  };
-	
-	  method.open = function () {
-	    method.center();
-	    $(window).bind('resize.modal', method.center);
-	    $modal.show();
-	    $overlay.show();
-	  };
-	
-	  method.close = function () {
-	    $modal.hide();
-	    $overlay.hide();
-	  };
-	
-	  return method;
-	}());
-	
-	
-	module.exports = { modal,
-	        $modal,
-	        $overlay,
-	        $play,
-	        $pic
 	      };
 
 

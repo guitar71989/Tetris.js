@@ -61,3 +61,18 @@ To keep my code DRY, I created a Coord class to handle the movements of the indi
 blocks into Javascript and a switch case
 
 ![Game View](./screenshots/rotatecode.png)
+
+## Gravity
+
+In order to implement gravity, I created a setTimeout event on the window, which
+is called at the bottom of each call to the gravity function. The timer for the timeout
+is indirectly proportional to the level of the game the user has reached. With this
+implementation, the gravity function only runs once the previous call has
+been completed, ensuring a smooth user experience even as the user reaches higher levels
+of the game.
+
+## Forthcoming
+
+* Users will be able to hear tetris theme song as they play game
+* Users will be able to hold pieces for future use in the game
+* Users will be able to record their highest scores
