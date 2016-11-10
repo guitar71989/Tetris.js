@@ -90,7 +90,7 @@ class View {
           this.numLines += 1;
           lines += 1;
 
-          if (this.numlines >= 10 && this.lines % 10 === 0) {
+          if (this.numLines >= this.level * 10) {
             this.level += 1;
           }
 
@@ -148,7 +148,8 @@ class View {
 
       }
     }
-    this.timeout = setTimeout(this.gravity, 500 - (this.level*50));
+    let currentSpeed = 100*Math.log(this.numLines + 1);
+    this.timeout = setTimeout(this.gravity, 500 - currentSpeed);
   }
 
     addKeydownListeners (e) {
