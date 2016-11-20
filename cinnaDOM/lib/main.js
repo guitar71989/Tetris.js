@@ -15,6 +15,12 @@ const registerDocReadyCallback = (func) => {
 };
 
 const $cinnaDOM  = function(arg){
+  if (arg === window){
+    return new DOMNodeCollection(
+      [window]
+    );
+  }
+
   switch(typeof(arg)){
     case "function":
       return registerDocReadyCallback(arg);
@@ -90,4 +96,4 @@ const getNodesFromDom = (arg) => {
   return new DOMNodeCollection(arrayify);
 };
 
-module.exports = $cinnaDOM
+module.exports = $cinnaDOM;
