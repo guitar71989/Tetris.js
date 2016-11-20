@@ -13,7 +13,7 @@ CSS3.
 
   * ← move block left
   * → move block right
-  * ↑ rotate block 90 degrees clockwise
+  * ↑ rotate block 90 degrees counter-clockwise
   * ↓ soft drop
 
 ## Intro Modal
