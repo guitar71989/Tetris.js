@@ -264,11 +264,20 @@ h1 img {
     border: 1px solid #000;
   }
 
+  /* Hold Piece Container */
+
+  .holdPiece-ctn {
+    padding-top: 10px;
+    border: 1px solid #fff;
+    width: 200px;
+    margin: 87px 40px 0 0;
+  }
+
   /* Next Piece Container */
 
   .nextPiece-ctn {
     padding-top: 10px;
-    margin: -30px 0 0 20px;
+    margin: -30px 0 0 40px;
     border: 1px solid #fff;
 
   }
@@ -305,8 +314,13 @@ h1 img {
   .left-ctn {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     color: #fff;
+  }
+
+  .left-ctn li {
+    border: 1px solid #000;
   }
 
   .score-ctn {
