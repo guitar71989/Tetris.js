@@ -106,7 +106,7 @@ h1 img {
   display: flex;
   align-self: center;
   position:absolute;
-  justify-content: center;
+  justify-content: space-around;
   flex-direction: column;
   background:url(tint20.png) 0 0 repeat;
   background:rgba(0,0,0,0.2);
@@ -176,7 +176,7 @@ h1 img {
 
 .key-instruction-ctn {
   display: flex;
-  justify-content: space-around;
+  align-content: flex-start;
 }
 
 .key-instruction {
@@ -185,32 +185,46 @@ h1 img {
 }
 
 .arrow {
+  display: block;
+  text-align: left;
   font-size: 30px;
-
-  margin-top: 40px;
+  margin-top: 41px;
+  margin-left: 30px;
+  width: 30px;
 
 }
 
 .up {
   -ms-transform: rotate(90deg); /* IE 9 */
   -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
-  transform: rotate(90deg);}
+  transform: rotate(90deg);
+  margin-left: 25px;
+}
+
 
 
 .right {
   -ms-transform: rotate(180deg); /* IE 9 */
   -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
-  transform: rotate(180deg);}
+  transform: rotate(180deg);
+  margin-left: 25px;
+}
 
 
   .down {
     -ms-transform: rotate(270deg); /* IE 9 */
     -webkit-transform: rotate(270deg); /* Chrome, Safari, Opera */
-    transform: rotate(270deg);}
+    transform: rotate(270deg);
   }
 
-  key-instruction-ctn p.rotatetext {
-    margin-left: 100px;
+  .key-text {
+    margin-left: 20px;
+  }
+
+  .hold {
+    font-size: 50px;
+    text-align: center;
+    margin-top: 33px;
   }
 
 
